@@ -1,12 +1,35 @@
-import redisClient from './utils/redis.js';
+const { MongoClient } = require('mongodb');
 
-(async () => {
-    console.log(redisClient.isAlive());
-    console.log(await redisClient.get('myKey'));
-    await redisClient.set('myKey', 12, 5);
-    console.log(await redisClient.get('myKey'));
+// Connection URL
+const url = 'mongodb://localhost:27017';
+const client = new MongoClient(url);
 
-    setTimeout(async () => {
-        console.log(await redisClient.get('myKey'));
-    }, 1000*10)
-})();
+// Database Name
+const dbName = 'mydatabase';
+
+async function main() {
+    try {
+        // Use connect method to connect to the server
+        await client.connect();
+        console.log('Connected successfully to server');
+        const db = client.db(dbName);
+
+        // Specify the collection to use
+        const collection = db.collection('documents');
+
+        // Insert some documents
+        const insertResult = await collection.insertMany([{ a: 1 }, { b: 2 }, { c: 3 }]);
+        console.log('Inserted documents =>', insertResult);
+
+        // Find all documents
+        const findResult = await collection.find({}).toArray();
+        console.log('Found documents =>', findResult);
+    } catch (err) {
+        console.error(err);
+    } finally {
+        // Close the connection
+        await client.close();
+    }
+}
+
+main().catch(console.error);
