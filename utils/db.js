@@ -1,31 +1,33 @@
-import { createClient } from "redis";
-import { promisify } from 'util';
 import { MongoClient } from 'mongodb';
 
 class DBClient {
-    constructor(host="localhost", port="27017", database="files_manager") {
-        this.host = host;
-        this.port = port;
-        this.database = database;
-        this.client = new MongoClient(`mongodb://${this.host}:${this.port}`);
-        this.client.connect();
-    }
+  constructor(port = 27017, host = 'localhost', db = 'files_manager') {
+    const url = `mongodb://${host}:${port}`;
+    this.client = new MongoClient(url, { useUnifiedTopology: true });
+    this.client.connect().then(() => {
+      console.log('-----conncetion success-----');
+      this.db = this.client.db(db);
+    }).catch((err) => {
+      console.log("didn't connected", err);
+    });
+  }
 
-    isAlive() {
-        return this.client.isConnected();
-    }
+  isAlive() {
+    return this.client.isConnected() && this.db !== null;
+  }
 
-    async nbUsers() {
-        return this.client.db(this.database).collection("users").countDocuments();
-    }
+  async nbUsers() {
+    const collection = await this.db.collection('users');
+    const count = await collection.countDocuments();
+    return count;
+  }
 
-    async nbFiles() {
-        return this.client.db(this.database).collection("files").countDocuments();
-    }
-
+  async nbFiles() {
+    const collection = await this.db.collection('files');
+    const count = await collection.countDocuments();
+    return count;
+  }
 }
 
 const dbClient = new DBClient();
 export default dbClient;
-
-

@@ -1,35 +1,30 @@
-const { MongoClient } = require('mongodb');
+import dbClient from './utils/db';
 
-// Connection URL
-const url = 'mongodb://localhost:27017';
-const client = new MongoClient(url);
+const waitConnection = () => {
+    return new Promise((resolve, reject) => {
+        let i = 0;
+        const repeatFct = async () => {
+            await setTimeout(() => {
+                i += 1;
+                if (i >= 10) {
+                    reject()
+                }
+                else if(!dbClient.isAlive()) {
+                    repeatFct()
+                }
+                else {
+                    resolve()
+                }
+            }, 1000);
+        };
+        repeatFct();
+    })
+};
 
-// Database Name
-const dbName = 'mydatabase';
-
-async function main() {
-    try {
-        // Use connect method to connect to the server
-        await client.connect();
-        console.log('Connected successfully to server');
-        const db = client.db(dbName);
-
-        // Specify the collection to use
-        const collection = db.collection('documents');
-
-        // Insert some documents
-        const insertResult = await collection.insertMany([{ a: 1 }, { b: 2 }, { c: 3 }]);
-        console.log('Inserted documents =>', insertResult);
-
-        // Find all documents
-        const findResult = await collection.find({}).toArray();
-        console.log('Found documents =>', findResult);
-    } catch (err) {
-        console.error(err);
-    } finally {
-        // Close the connection
-        await client.close();
-    }
-}
-
-main().catch(console.error);
+(async () => {
+    console.log(dbClient.isAlive());
+    await waitConnection();
+    console.log(dbClient.isAlive());
+    console.log(await dbClient.nbUsers());
+    console.log(await dbClient.nbFiles());
+})();
