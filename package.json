@@ -18,6 +18,7 @@
     "bcryptjs": "^2.4.3",
     "bull": "^3.16.0",
     "chai-http": "^4.3.0",
+    "crypto": "^1.0.1",
     "express": "^4.19.2",
     "image-thumbnail": "^1.0.10",
     "jsonwebtoken": "^9.0.2",
