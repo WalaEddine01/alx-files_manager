@@ -7,5 +7,5 @@ router.get('/status', status);
 
 router.get('/stats', stats);
 
-router.post("/users", postNew);
+router.post('/users', postNew);
 export default router;
