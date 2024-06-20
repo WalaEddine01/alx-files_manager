@@ -13,11 +13,11 @@ const getConnect = async (req, res) => {
   if (!password) return res.status(401).send({ error: 'Unauthorized' });
   const c = dbClient.db.collection('users');
   const a = await c.findOne({
-    email
+    email,
   });
   if (a) {
-    if (a.password !== crypto.createHash('SHA1').update(password).digest('hex')){
-        return res.status(401).send({ error: 'Unauthorized' });
+    if (a.password !== crypto.createHash('SHA1').update(password).digest('hex')) {
+      return res.status(401).send({ error: 'Unauthorized' });
     }
   } else {
     return res.status(401).send({ error: 'Unauthorized' });
