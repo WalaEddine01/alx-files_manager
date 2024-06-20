@@ -13,10 +13,12 @@ const getConnect = async (req, res) => {
   if (!password) return res.status(400).send({ error: 'Missing password' });
   const c = dbClient.db.collection('users');
   const a = await c.findOne({
-    email, password
+    email,
   });
   if (a) {
-    console.log(crypto.createHash('sha1').update(password).digest('hex') === a.password);
+    if (a.password !== crypto.createHash('SHA1').update(password).digest('hex')) {
+      return res.status(401).send({ error: 'wrong password' });
+    }
   } else {
     return res.status(401).send({ error: 'Unauthorized' });
   }
