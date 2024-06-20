@@ -10,6 +10,6 @@ router.get('/stats', stats);
 
 router.post('/users', postNew);
 
-router.post('/connect', getConnect);
+router.get('/connect', getConnect);
 
 export default router;
