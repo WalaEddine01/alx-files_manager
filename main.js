@@ -22,10 +22,9 @@ const waitConnection = () => {
 };
 
 (async () => {
-    
+    console.log(dbClient.isAlive());
     await waitConnection();
+    console.log(dbClient.isAlive());
     console.log(await dbClient.nbUsers());
-    const findResult = await dbClient.db.collection('users').find({}).toArray();
-    console.log('Found documents =>', findResult);
-    
+    console.log(await dbClient.nbFiles());
 })();

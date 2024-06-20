@@ -4,17 +4,20 @@ class DBClient {
   constructor(port = 27017, host = 'localhost', db = 'files_manager') {
     const url = `mongodb://${host}:${port}`;
     this.client = new MongoClient(url, { useUnifiedTopology: true });
+    this.db = null;
+    this.isConnected = false;
 
     this.client.connect().then(() => {
-      console.log('-----conncetion db success-----');
+      console.log('-----connection db success-----');
       this.db = this.client.db(db);
+      this.isConnected = true;
     }).catch((err) => {
-      console.log("didn't connected", err);
+      console.log("didn't connect", err);
     });
   }
 
   isAlive() {
-    return this.client.isConnected() && this.db !== null;
+    return this.isConnected && this.db !== null;
   }
 
   async nbUsers() {
