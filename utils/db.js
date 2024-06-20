@@ -8,7 +8,6 @@ class DBClient {
     this.isConnected = false;
 
     this.client.connect().then(() => {
-      console.log('-----connection db success-----');
       this.db = this.client.db(db);
       this.isConnected = true;
     }).catch((err) => {
