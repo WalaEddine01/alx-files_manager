@@ -6,13 +6,14 @@ import redisClient from '../utils/redis';
 
 const getConnect = async (req, res) => {
   const auth = req.headers.authorization.split(' ')[1];
+  if (!auth) return res.status(401).send({ error: 'Unauthorized' });
   const credentials = Buffer.from(auth, 'base64').toString('utf-8');
   const [email, password] = credentials.split(':');
   if (!email) return res.status(400).send({ error: 'Missing email' });
   if (!password) return res.status(400).send({ error: 'Missing password' });
   const c = dbClient.db.collection('users');
   const a = await c.findOne({
-    email,
+    email, password
   });
   if (a) {
     console.log(crypto.createHash('sha1').update(password).digest('hex') === a.password);
