@@ -49,7 +49,7 @@ const postUpload = async (req, res) => {
       const localPath = path.join(FOLDER_PATH, uuidv4());
       fs.writeFileSync(localPath, Buffer.from(data, 'base64'));
     }
-    const result = await c.insertOne(fileData);
+    const result = await f.insertOne(fileData);
     return res.status(201).send({
       id: result.insertedId,
       userId: fileData.userId,
@@ -64,4 +64,14 @@ const postUpload = async (req, res) => {
   }
 };
 
-export default postUpload;
+const getShow = async (req, res) => {
+  
+};
+
+const getIndex = async (req, res) => {
+
+};
+
+export {
+   postUpload, getShow, getIndex
+  };
